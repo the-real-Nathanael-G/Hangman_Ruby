@@ -4,28 +4,26 @@ describe Hangman do
     let(:hangman_test) { Hangman.new(io) }
 
     it "returns no. of letters when given word" do
-      input = StringIO.new("1")
-      hangman = Hangman.new(input)
-      expect(hangman.set_secret_word).to eq ("The word has 7 letters. _ _ _ _ _ _ _ ")
+      expect(hangman_test.set_secret_word("1")).to eq ("The word has 7 letters. _ _ _ _ _ _ _ ")
     end
 
     it "returns no. of letters when given word" do
-      expect(hangman_test.set_secret_word).to eq ("The word has 9 letters. _ _ _ _ _ _ _ _ _ ")
+      expect(hangman_test.set_secret_word("Nathanael")).to eq ("The word has 9 letters. _ _ _ _ _ _ _ _ _ ")
     end
 
     it "returns number of a's when given a" do
-      hangman_test.set_secret_word
+      hangman_test.set_secret_word("Nathanael")
       expect(hangman_test.word_guess("a")).to eq ("The word has 3 a's. _ a_ _ a_ a_ _ ")
     end
 
     it "returns number of a's and n's when given a and n" do
-      hangman_test.set_secret_word
+      hangman_test.set_secret_word("Nathanael")
       hangman_test.word_guess("a")
       expect(hangman_test.word_guess("n")).to eq ("The word has 2 n's. na_ _ ana_ _ ")
     end
 
     it "returns no o's when given o" do
-      hangman_test.set_secret_word
+      hangman_test.set_secret_word("Nathanael")
       hangman_test.word_guess("a")
       hangman_test.word_guess("n")
       expect(hangman_test.word_guess("o")).to eq ("The word has 0 o's.\n |\n |\n |\n_|_____")

@@ -1,5 +1,11 @@
 require_relative "life"
+require_relative "dictionary"
+require "stringio"
 class Hangman
+  def initialize(input)
+   @input = input
+  end
+
   def losing_situation(guess)
     @life = @life - 1
     if @life == 0
@@ -20,8 +26,7 @@ class Hangman
 
   def set_secret_word(secret_word)
     @topic_choice = secret_word
-    topics
-    @answer = @the_topic
+    @the_topic = Dictionary.new.topics(@topic_choice)
     @the_secret_word = @the_topic
     @the_secret_word = @the_secret_word.downcase
     length = @the_secret_word.length
@@ -41,7 +46,7 @@ class Hangman
 
   def game_over?(guess)
     if @life == 0
-      "You Lose!" + "The word was: " + @answer + Life.new(@life).life_stages
+      "You Lose!" + "The word was: " + @the_topic + Life.new(@life).life_stages
     elsif !blanks.include?('_')
       "You Win!!! The word was: " + blanks
     else
@@ -49,43 +54,16 @@ class Hangman
     end
   end
 
-  def topics
-    if @topic_choice == "1"
-      @the_topic = words_in_topics[:sport]
-      "You have chosen Sport"
-    elsif @topic_choice == "2"
-      @the_topic = words_in_topics[:food_and_drink]
-      "You have chosen Food & Drink"
-    elsif @topic_choice == "3"
-      @the_topic = words_in_topics[:hobbies]
-      "You have chosen Hobbies"
-    elsif @topic_choice == "4"
-      @the_topic = words_in_topics[:animals]
-      "You have chosen Animals"
-    elsif @topic_choice == "5"
-      @the_topic = words_in_topics[:wild_cards]
-      "You have chosen Wild cards"
-    end
-    @the_topic
-  end
-
-  def words_in_topics
-  {:sport => ["Basketball", "Football", "Ice hockey", "Baseball", "Tennis", "Hockey", "Archery", "Rock climbing", "Golf", "Athletics"].sample,
-    :food_and_drink =>  ["Ice cream", "Victoria sponge cake", "Chocolate", "Apple", "Orange", "Strawberry", "Kebab", "Burger", "Smoothie", "Milkshake", "Jelly", "Sausage", "Tomato", "Pepper", "Olives", "Cheese", "Jalapeno", "Cucumber", "Slushie"].sample,
-    :hobbies => ["Dance", "Gardening", "Music", "Stamp collecting", "Collectibles", "Drawing", "Sewing", "Photography", "Television"].sample,
-    :animals => ["Tyranosaurus rex", "Beluga whale", "Great white shark", "Triceratops", "Monkey", "Panther", "Gorilla", "Foal", "Parrot", "Cannary", "Parakeet", "Bald eagle", "Calf", "Lamb", "Squid", "Sea urchin", "Lion", "Badger", "Cheetah"].sample,
-    :wild_cards => ["Football", "Archery", "Music", "Drawing", "Tyranosaurus rex", "Victoria sponge cake", "Rock climbing", "Sewing", "Gorilla" ,"Kebab", "Milkshake", "Great white shark", " Pepper", "Lion", "Television", "Beluga whale", "Olive", "Cheetah", "Cheese"].sample}
-  end
-
   def game_loop
     puts "Welcome"
     puts "Choose your category:"
     puts "1.Sport, \n2.Food & drink, \n3.Hobbies, \n4.Animals, \n5.Wild cards."
-    set_secret_word(gets.chomp)
+    selection = @input.gets.chomp
+    set_secret_word(selection)
     until @life == 0 || !blanks.include?('_')
-      puts word_guess(gets.chomp)
+      puts word_guess(@input.gets.chomp)
     end
   end
 end
 
-Hangman.new.game_loop
+Hangman.new($stdin).game_loop
